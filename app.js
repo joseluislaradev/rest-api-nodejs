@@ -27,12 +27,47 @@ const peliculas = require("./movies.json");
 const app = express();
 app.disable("x-powered-by");
 
-const puerto = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json()); //Para poder recibir datos en formato JSON
 
+const resumen = `###Recupera todas las peliculas
+GET http://localhost:3000/peliculas
+
+
+###Recupera una pelicula por id
+GET http://localhost:3000/peliculas/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+
+
+###Recupera una pelicula por genero
+GET http://localhost:3000/peliculas?genre=Action
+
+
+###Crea una pelicula
+POST http://localhost:3000/peliculas
+Content-Type: application/json
+
+{
+  "title": "Inception",
+  "year": 2010,
+  "director": "Christopher Nolan",
+  "rate": 5,
+  "poster": "https://example.com/inception.jpg",
+  "duration": 148,
+  "genre": ["Science Fiction"]
+} 
+
+
+###Actualizar una pelicula
+PATCH http://localhost:3000/peliculas/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+Content-Type: application/json
+
+{
+  "year": 1889
+}`;
+
 app.get("/", (req, res) => {
-  res.send("<h1>Hola Mundo</h1>");
+  res.send("Resumen API REST \n" + resumen);
 });
 
 //Hya un middleware par aoslucionar lso probelmas de corrs pero lo que hace es permitir todo y no es seguro ni util simepre
@@ -160,6 +195,6 @@ app.use((req, res) => {
   res.status(404).send("Recurso no encontrado");
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
 });
