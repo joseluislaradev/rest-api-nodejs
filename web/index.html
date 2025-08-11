@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="module">
+      const cards = document.createElement("div");
+      cards.style.display = "flex";
+      cards.style.flexWrap = "wrap";
+      cards.style.gap = "10px";
+
+      function peticionMovies(page = 1) {
+        fetch("http://localhost:3000/peliculas?page=" + page)
+          .then((response) => response.json())
+          .then((movies) => {
+            const html = movies
+              .map(
+                (movie) => `
+                    <div data-id="${movie.id}" style="border: 1px solid black; padding: 10px; margin: 10px; width: 300px;">
+                        <h2>${movie.title}</h2>
+                        <p>Year: ${movie.year}</p>
+                        <p>Director: ${movie.director}</p>
+                        <p>Rate: ${movie.rate}</p>
+                        <img src="${movie.poster}" alt="${movie.title} poster" style="width: 100px; height: 150px;" />
+                        <p>Duration: ${movie.duration} minutes</p>
+                        <button>Delete</button>
+                    </div>
+                `
+              )
+              .join("");
+            cards.innerHTML += html;
+            document.body.appendChild(cards);
+
+            document.addEventListener("click", (event) => {
+              if (event.target.tagName === "BUTTON") {
+                const movieDiv = event.target.closest("div[data-id]");
+                const movieId = movieDiv.getAttribute("data-id");
+
+                fetch(`http://localhost:3000/peliculas/${movieId}`, {
+                  method: "DELETE",
+                })
+                  .then((response) => {
+                    if (response.ok) {
+                      movieDiv.remove();
+                    } else {
+                      console.error("Failed to delete movie");
+                    }
+                  })
+                  .catch((error) => console.error("Error:", error));
+              }
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      peticionMovies(1);
+
+      const button = document.createElement("button");
+      button.textContent = "Page 1 +";
+      button.style.margin = "20px";
+      button.addEventListener("click", () => {
+        const currentPage = parseInt(cards.getAttribute("data-page") || "1");
+        const nextPage = currentPage + 1;
+        button.textContent = "Page " + nextPage + " +";
+        cards.setAttribute("data-page", nextPage);
+        peticionMovies(nextPage);
+      });
+      document.body.appendChild(button);
+    </script>
+  </head>
+  <body>
+    <h1>Hola mundo web</h1>
+  </body>
+</html>

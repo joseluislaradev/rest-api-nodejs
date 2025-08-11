@@ -1,0 +1,16 @@
+{
+  "name": "rest-api-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node ./app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "5.1.0",
+    "zod": "^4.0.15"
+  }
+}
